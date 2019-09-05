@@ -1,0 +1,31 @@
+<div class="container">
+    <h1>Add Recipe</h1>
+    <form id="add-recipe-form" action="recipes" method="post">
+        <input name='form-type' value='add' hidden>
+        <div class="form-group">
+            <label for="recipe_name">Recipe Name:</label>
+            <input type="text" class="form-control" id="recipe_name" name="recipe_name" placeholder="Enter Recipe Name">
+            <label for="recipe_yield">Recipe Yield:</label>
+            <input type="text" class="form-control" id="recipe_yield" name="recipe_yield" placeholder="Enter Recipe Yield">
+            <label for="recipe_desc">Recipe Description:</label>
+            <textarea form="add-recipe-form" class="form-control" name="recipe_desc" id="recipe_desc" placeholder="Enter Recipe Description"></textarea>
+            <div class="add-ingredient-section">
+                <label class="add-ing-label" for="recipe_ingredients">Ingredients: </label>
+                <div id="add-ing-btn" class="add-ing-btn btn btn-primary">Add Ingredient</div>
+            </div>
+            <ul id="add-ingredient-list" class="list-group">
+
+            </ul>
+
+            <div class="add-step-section">
+                <label class="add-step-label" for="recipe_ingredients">Steps: </label>
+                <div id="add-step-btn" class="add-step-btn btn btn-primary">Add Step</div>
+            </div>
+            <ol id="add-step-list" class="list-group">
+
+            </ol>
+
+            <input type=submit class="btn btn-primary mt-3" value="Add Recipe">
+        </div>
+    </form>
+</div>

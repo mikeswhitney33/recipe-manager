@@ -3,7 +3,7 @@
     <head>
         <meta charset='utf-8'>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
+
         <!-- Bootstrap 4 -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="/static/css/recipe-manager.css">
@@ -11,6 +11,16 @@
         <title>{% title %}</title>
     </head>
     <body>
+        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+            <a class="navbar-brand" href="/">Recipe Manager</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="/add">
+                        Add Recipe
+                    </a>
+                </li>
+            </ul>
+        </nav>
         {% body %}
     </body>
     <!-- jQuery library -->
@@ -19,6 +29,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="/static/js/recipe-manager.js"></script>
+    <script type="text/javascript" src="/static/js/recipe-manager.js"></script>
     {% scripts.html %}
 </html>
