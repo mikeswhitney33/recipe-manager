@@ -27,8 +27,7 @@ class RecipeWebService(object):
         if 'step' in kwargs:
             for step in kwargs['step']:
                 recipe.add_step(step)
-        if kwargs['form-type'] == 'add':
-            self.db.add_recipe(recipe)
+        self.db.add_recipe(recipe)
         raise cherrypy.HTTPRedirect('/')
 
     def DELETE(self, recipe_id=""):
@@ -37,4 +36,4 @@ class RecipeWebService(object):
             self.db.remove_recipe(recipe_id)
             return "success"
         else:
-            return "failure"
+            raise cherrypy.HTTPError(403)
