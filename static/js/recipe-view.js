@@ -1,5 +1,8 @@
 $(document).ready(function(){
     var recipe_id = getUrlVars()['recipe_id'];
+    $("#edit-btn").click(function() {
+        window.location.href = "/edit?recipe_id=" + recipe_id;
+    });
     $.ajax({
         type: "GET",
         url: "/recipes?recipe_id=" + recipe_id
@@ -28,7 +31,6 @@ $(document).ready(function(){
                 $('#step-list').append('<li>'+obj['steps'][i]+'</li>');
             }
         }
-
     });
 });
 

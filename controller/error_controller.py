@@ -2,4 +2,6 @@ from controller.base import BaseController
 
 class ErrorController(BaseController):
     def error_404(self):
-        return self.render_template('404 - Not Found', 'views/errors/404.html')
+        page = self.set_body(self.template, 'views/errors/404.html')
+        page = self.add_css(page, '/static/css/error.css')
+        return page

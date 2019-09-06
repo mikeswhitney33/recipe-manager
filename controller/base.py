@@ -2,34 +2,27 @@ import os
 import re
 
 class BaseController(object):
-    def render_template(self, title, path, layout_path="views/layout.html"):
-        if os.path.isdir(path):
-            dir_path = path
-            body_path = os.path.join(path, 'index.html')
-        else:
-            dir_path = os.path.dirname(path)
-            body_path = path
+    def __init__(self, template_path='views/layout.html'):
+        with open(template_path, 'r') as template_file:
+            self.template = template_file.read()
 
+    def add_js(self, page, js_path):
+        page = page.replace('</html>', '<script type="text/javascript" src="{}"></script></html>'.format(js_path))
+        return page 
+    
+    def add_css(self, page, css_path):
+        page = page.replace('</head>', '<link rel="stylesheet" href="{}"></head>'.format(css_path))
+        return page 
 
-        with open(layout_path, 'r') as layout_file:
-            layout_data = layout_file.read()
-        tags = re.findall(r"\{\% [a-zA-Z0-9]*\.*[a-zA-Z0-9]* \%\}", layout_data)
-        tag_bodies = [tag.split()[1] for tag in tags]
-        for tag, body in zip(tags, tag_bodies):
-            if body == 'title':
-                layout_data = layout_data.replace(tag, title)
-            elif body == "body":
-                with open(body_path, 'r') as body_file:
-                    body_data = body_file.read()
-                    layout_data = layout_data.replace(tag, body_data)
-            elif os.path.exists(os.path.join(dir_path, body)):
+    def set_title(self, page, title):
+        page = page.replace("<title></title>", "<title>{}</title>".format(title))
+        return page
 
-                with open(os.path.join(dir_path, body), 'r') as body_file:
-                    body_data = body_file.read()
-                    layout_data = layout_data.replace(tag, body_data)
-            else:
-                layout_data = layout_data.replace(tag, '')
-        return layout_data
+    def set_body(self, page, path_to_body):
+        with open(path_to_body, 'r') as body_file:
+            page = page.replace("{% body %}", body_file.read())
+            return page
+
 
 if __name__ == "__main__":
     c = BaseController()

@@ -38,7 +38,7 @@ def start_server():
             'tools.staticdir.dir':'./static'
         }
     }
-    home = HomeController()
+    home = HomeController('views/layout.html')
     home.recipes = RecipeWebService(Database())
     cherrypy.tree.mount(home, '/', site_conf)
     cherrypy.config.update(server_conf)

@@ -1,6 +1,6 @@
 <div class="container">
-    <h1>Add Recipe</h1>
     <form id="add-recipe-form" action="recipes" method="post">
+        <h1 id="add-title">Add Recipe</h1>
         <div class="form-group">
             <label for="recipe_name">Recipe Name:</label>
             <input type="text" class="form-control" id="recipe_name" name="recipe_name" placeholder="Enter Recipe Name">
@@ -24,7 +24,7 @@
 
             </ol>
 
-            <input type=submit class="btn btn-primary mt-3" value="Add Recipe">
+            <input id="submit-btn" type=submit class="btn btn-primary mt-3" value="Add Recipe">
         </div>
     </form>
 </div>
