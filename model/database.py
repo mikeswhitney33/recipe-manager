@@ -32,8 +32,9 @@ class Database(object):
             row = cur.fetchone()
             if row is None:
                 return None
-            recipe_id, name, yld, desc = row
-            recipe = Recipe(name, yld, desc)
+            print(row)
+            recipe_id, name, yld, desc, notes = row
+            recipe = Recipe(name, yld, desc, notes)
             cur.execute("SELECT name, amount FROM ingredients WHERE recipe_id=?", (recipe_id,))
             ingredient_data = cur.fetchall()
             for ingredient_name, ingredient_amount in ingredient_data:
@@ -47,14 +48,14 @@ class Database(object):
     def add_recipe(self, recipe):
         with sqlite3.connect(self.__db_path) as conn:
             cur = conn.cursor()
-            cur.execute("INSERT INTO recipes (name, yield, description) VALUES (?, ?, ?)", (recipe.name, recipe.yld, recipe.desc))
+            cur.execute("INSERT INTO recipes (name, yield, description, notes) VALUES (?, ?, ?, ?)", (recipe.name, recipe.yld, recipe.desc, recipe.notes))
             recipe_id = cur.lastrowid
             for ingredient in recipe.ingredients:
                 cur.execute("INSERT INTO ingredients (name, amount, recipe_id) VALUES (?, ?, ?)", (ingredient.name, ingredient.amount, recipe_id))
             for step in recipe.steps:
                 cur.execute("INSERT INTO steps (description, recipe_id) VALUES (?, ?)", (step, recipe_id))
             conn.commit()
-            return cur.lastrowid
+            return recipe_id
 
     def remove_recipe(self, recipe_id):
         with sqlite3.connect(self.__db_path) as conn:
@@ -63,16 +64,3 @@ class Database(object):
             cur.execute("DELETE FROM ingredients WHERE recipe_id = ?", (recipe_id,))
             cur.execute("DELETE FROM steps WHERE recipe_id = ?", (recipe_id,))
             conn.commit()
-
-if __name__ == "__main__":
-    # with open("db/schema.sql", 'r') as f:
-    #     schema = [scheme for scheme in f.read().replace('\n', '').split(';') if len(scheme) > 0]
-    # print(schema)
-    db = Database()
-    recipe = Recipe("cake", "3 dozen", "makes a cake")
-    recipe.add_ingredient(Ingredient("sugar", "1 cup"))
-    recipe.add_ingredient(Ingredient("flour", "2 cups"))
-    recipe.add_step("put stuff together and bake")
-    recipe_id = db.add_recipe(recipe)
-    print(db.get_recipe_names())
-    db.remove_recipe(recipe_id)

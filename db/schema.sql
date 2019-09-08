@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS recipes (
     recipe_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     yield TEXT,
-    description TEXT);
+    description TEXT,
+    notes TEXT);
 
 CREATE TABLE IF NOT EXISTS ingredients(
     ingredient_id INTEGER PRIMARY KEY,

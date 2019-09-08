@@ -2,19 +2,23 @@ $(document).ready(function() {
     var recipe_id = getUrlVars()['recipe_id'];
     $('#add-title').html('Edit Recipe');
     $('#submit-btn').val('Save Edits');
-    $('#submit-btn').click(function(event){
+    $('#submit-btn').off('click').on('click', function (event) {
         event.preventDefault();
         var data = getFormData();
-        data['recipe_id'] = recipe_id;
+        data["recipe_id"] = recipe_id;
         $.ajax({
-            type:"PUT",
-            url:"/recipes",
-            data: data
-        }).done(function(data) {
-            alert(data);
-            // window.location.href="/view?recipe_id="+recipe_id;
+            type: "PUT",
+            url: "/recipes",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: 'json',
+            success: function (data) {
+                window.location.href = "/view?recipe_id=" + data["recipe_id"];
+            },
+            error: function () {
+                alert("An error occured while adding your recipe");
+            }
         });
-        // alert(JSON.stringify(data));
     });
     $('#add-recipe-form').prepend('<div id="delete-btn" class="btn btn-danger float-right">Delete Recipe</div>')
     $('#add-recipe-form').prepend('<input type=text name="recipe_id" value="'+recipe_id+'" hidden>');
@@ -30,16 +34,16 @@ $(document).ready(function() {
         type: "GET",
         url: "/recipes?recipe_id="+recipe_id
     }).done(function(data) {
-        alert(data);
         var obj = JSON.parse(data);
         $("#recipe_name").val(obj['name']);
         $('#recipe_yield').val(obj['yield']);
         $('#recipe_desc').val(obj['description']);
+        $('#recipe_notes').val(obj['notes']);
         var ingredients = obj['ingredients'];
         for(var i = 0; i < ingredients.length;i++) {
             add_ingredient_field();
             var field = $('#add-ingredient-list').children()[i];
-        
+
             $(field).find('.ing-name').val(ingredients[i]['name']);
             $(field).find('.ing-amount').val(ingredients[i]['amount']);
         }
@@ -50,6 +54,5 @@ $(document).ready(function() {
             var field = $("#add-step-list").children()[i];
             $(field).find('.step-field').val(steps[i]);
         }
-        // alert(obj['name']);
     });
 });

@@ -16,6 +16,10 @@ $(document).ready(function(){
             $("#recipe-viewer").append('<h3>Description: </h3>\
             <p>'+obj['description']+'</p>');
         }
+        if(obj['notes'].length > 0) {
+            $('#recipe-viewer').append('<h3>Notes: </h3>\
+            <p>'+obj['notes']+'</p>');
+        }
         if(obj['ingredients'].length > 0) {
             $("#recipe-viewer").append('<h3>Ingredients: </h3><table class="table" id="ing-list"><tbody></tbody></table>');
             for(var i = 0;i < obj['ingredients'].length;i++) {

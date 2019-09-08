@@ -30,11 +30,12 @@ function add_step_field() {
 function getFormData() {
 
     return {
-        'recipe_name':$('#recipe_name').val(),
-        'recipe_yield':$('#recipe_yield').val(),
-        'recipe_desc':$('#recipe_desc').val(),
-        'ingredient_names':$('.ing-name').map(function(){return $(this).val()}).get(),
-        'ingredient_amounts':$('.ing-amount').map(function(){return $(this).val()}).get(),
+        'recipe_name': $('#recipe_name').val(),
+        'recipe_yield': $('#recipe_yield').val(),
+        'recipe_desc': $('#recipe_desc').val(),
+        'recipe_notes': $('#recipe_notes').val(),
+        'ingredient_names': $('.ing-name').map(function(){return $(this).val()}).get(),
+        'ingredient_amounts': $('.ing-amount').map(function(){return $(this).val()}).get(),
         'steps':$('.step-field').map(function(){return $(this).val()}).get()
     };
 }
@@ -47,11 +48,15 @@ $(document).ready(function() {
         $.ajax({
             type:"POST",
             url:"/recipes",
-            data: getFormData()
-        }).done(function(data) {
-            alert(data);
-            // window.location.href="/";
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(getFormData()),
+            dataType: 'json',
+            success: function (data) {
+                window.location.href = "/view?recipe_id="+data["recipe_id"];
+            },
+            error: function(){
+                alert("An error occured while adding your recipe");
+            }
         });
-        // alert(JSON.stringify(data));
     });
 });
