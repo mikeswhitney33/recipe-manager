@@ -1,8 +1,8 @@
 function add_ingredient_field() {
     $('#add-ingredient-list').append('<li class="add-ing-item list-group-item">\
         <div class="input-group">\
-            <input type=text class="form-control ing-name" placeholder="Enter Ingredient Name..." name="ingredient-name" >\
             <input type=text class="form-control ing-amount" placeholder="Enter Ingredient Amount..." name="ingredient-amount">\
+            <input type=text class="form-control ing-name" placeholder="Enter Ingredient Name..." name="ingredient-name" >\
             <div class="input-group-append">\
                 <button class="remove-ing-btn btn btn-danger" type="button">Remove</button>\
             </div>\
@@ -28,21 +28,38 @@ function add_step_field() {
 }
 
 function getFormData() {
+    var ing_names = $('.ing-name').map(function(){return $(this).val()}).get();
+    var ing_amounts = $('.ing-amount').map(function(){return $(this).val()}).get();
+    var ingredients = [];
+    for(var i = 0;i < ing_names.length;i++) {
+        ingredients.push({
+            'name':ing_names[i],
+            'amount':ing_amounts[i]
+        });
+    }
 
     return {
-        'recipe_name': $('#recipe_name').val(),
-        'recipe_yield': $('#recipe_yield').val(),
-        'recipe_desc': $('#recipe_desc').val(),
-        'recipe_notes': $('#recipe_notes').val(),
-        'ingredient_names': $('.ing-name').map(function(){return $(this).val()}).get(),
-        'ingredient_amounts': $('.ing-amount').map(function(){return $(this).val()}).get(),
+        'name': $('#recipe_name').val(),
+        'yld': $('#recipe_yield').val(),
+        'desc': $('#recipe_desc').val(),
+        'notes': $('#recipe_notes').val(),
+        'ingredients': ingredients,
         'steps':$('.step-field').map(function(){return $(this).val()}).get()
     };
 }
 
 $(document).ready(function() {
-    $('#add-ing-btn').click(add_ingredient_field);
-    $('#add-step-btn').click(add_step_field);
+    $('#add-ing-btn').click(function() {
+        add_ingredient_field();
+        $('.ing-amount').last().focus();
+    });
+    $('#add-step-btn').click(function() {
+        add_step_field();
+        $('.step-field').last().focus();
+    });
+    $('#cancel-btn').click(function() {
+        window.location.href="/";
+    });
     $('#submit-btn').click(function(event){
         event.preventDefault();
         $.ajax({

@@ -1,33 +1,39 @@
 <div class="container">
     <form id="add-recipe-form" action="recipes" method="post">
         <h1 id="add-title">Add Recipe</h1>
-        <div class="form-group">
+        <div id="add-recipe-form-group" class="form-group">
             <label for="recipe_name">Recipe Name:</label>
             <input type="text" class="form-control" id="recipe_name" name="recipe_name" placeholder="Enter Recipe Name">
             <label for="recipe_yield">Recipe Yield:</label>
             <input type="text" class="form-control" id="recipe_yield" name="recipe_yield" placeholder="Enter Recipe Yield">
             <label for="recipe_desc">Recipe Description:</label>
             <textarea form="add-recipe-form" class="form-control" name="recipe_desc" id="recipe_desc" placeholder="Enter Recipe Description..."></textarea>
-            <label for="recipe_notes">Recipe Notes:</label>
-            <textarea form="add-recipe-form" class="form-control" name="recipe_notes" id="recipe_notes"
-                placeholder="Enter Recipe Notes..."></textarea>
+            
             <div class="add-ingredient-section">
                 <label class="add-ing-label" for="recipe_ingredients">Ingredients: </label>
-                <div id="add-ing-btn" class="add-ing-btn btn btn-primary">Add Ingredient</div>
+                
             </div>
             <ul id="add-ingredient-list" class="list-group">
 
             </ul>
+            <div id="add-ing-btn" class="add-ing-btn btn btn-primary mt-3">Add Ingredient</div>
 
             <div class="add-step-section">
                 <label class="add-step-label" for="recipe_ingredients">Steps: </label>
-                <div id="add-step-btn" class="add-step-btn btn btn-primary">Add Step</div>
+                
             </div>
             <ol id="add-step-list" class="list-group">
 
             </ol>
+            <div id="add-step-btn" class="add-step-btn btn btn-primary mt-3">Add Step</div><br>
 
-            <input id="submit-btn" type=submit class="btn btn-primary mt-3" value="Add Recipe">
+            <!-- <input id="submit-btn" type=submit class="btn btn-primary mt-3" value="Add Recipe"> -->
+            <label class="mt-3" for="recipe_notes">Recipe Notes:</label>
+            <textarea form="add-recipe-form" class="form-control" name="recipe_notes" id="recipe_notes"
+                placeholder="Enter Recipe Notes..."></textarea>
+
+            <div class="btn btn-primary mt-3" id="submit-btn">Add Recipe</div>
+            <div class="btn btn-info mt-3" id="cancel-btn">Cancel</div>
         </div>
     </form>
 </div>

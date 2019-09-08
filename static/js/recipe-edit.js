@@ -1,7 +1,7 @@
 $(document).ready(function() {
     var recipe_id = getUrlVars()['recipe_id'];
     $('#add-title').html('Edit Recipe');
-    $('#submit-btn').val('Save Edits');
+    $('#submit-btn').html('Save Edits');
     $('#submit-btn').off('click').on('click', function (event) {
         event.preventDefault();
         var data = getFormData();
@@ -20,7 +20,10 @@ $(document).ready(function() {
             }
         });
     });
-    $('#add-recipe-form').prepend('<div id="delete-btn" class="btn btn-danger float-right">Delete Recipe</div>')
+    $('#cancel-btn').off('click').on('click', function() {
+        window.location.href = "/view?recipe_id="+recipe_id;
+    });
+    $('#add-recipe-form-group').append('<div id="delete-btn" class="btn btn-danger mt-3">Delete Recipe</div>')
     $('#add-recipe-form').prepend('<input type=text name="recipe_id" value="'+recipe_id+'" hidden>');
     $("#delete-btn").click(function() {
         $.ajax({

@@ -13,7 +13,6 @@ class RecipeWebService(object):
         if recipe_id.isdigit():
             recipe_id = int(recipe_id)
             recipe = self.db.get_recipe(recipe_id)
-            print(json.dumps(dict(recipe)))
             return json.dumps(dict(recipe))
         else:
             rows = self.db.get_recipe_names()
@@ -24,18 +23,15 @@ class RecipeWebService(object):
     def POST(self):
         try:
             args = cherrypy.request.json
-            recipe = Recipe(args['recipe_name'], args['recipe_yield'], args['recipe_desc'], args['recipe_notes'])
-            for ing_name, ing_amount in zip(args['ingredient_names'], args['ingredient_amounts']):
-                recipe.add_ingredient(Ingredient(ing_name, ing_amount))
-            for step in args['steps']:
-                recipe.add_step(step)
+            recipe = Recipe(**args)
             recipe_id = self.db.add_recipe(recipe)
 
             return json.dumps({
                 "status":"success",
                 "recipe_id":recipe_id
             })
-        except:
+        except Exception as err:
+            print(err)
             raise cherrypy.HTTPError(403)
 
 
@@ -50,13 +46,8 @@ class RecipeWebService(object):
     def PUT(self):
         try:
             args = cherrypy.request.json
-            print(args)
-            recipe_id = args['recipe_id']
-            recipe = Recipe(args['recipe_name'], args['recipe_yield'], args['recipe_desc'], args['recipe_notes'])
-            for ing_name, ing_amount in zip(args['ingredient_names'], args['ingredient_amounts']):
-                recipe.add_ingredient(Ingredient(ing_name, ing_amount))
-            for step in args['steps']:
-                recipe.add_step(step)
+            recipe_id = args.pop('recipe_id')
+            recipe = Recipe(**args)
             self.db.remove_recipe(recipe_id)
             recipe_id = self.db.add_recipe(recipe)
 
@@ -66,18 +57,3 @@ class RecipeWebService(object):
             })
         except:
             raise cherrypy.HTTPError(403)
-        # if recipe_id.isdigit():
-        #     recipe_id = int(recipe_id)
-        #     self.db.remove_recipe(recipe_id)
-        #     recipe = Recipe(kwargs['recipe_name'], kwargs['recipe_yield'], kwargs['recipe_desc'])
-        #     if 'ingredient-name' in kwargs and 'ingredient-amount' in kwargs:
-        #         for ing_name, ing_amount in zip(kwargs['ingredient-name'], kwargs['ingredient-amount']):
-        #             recipe.add_ingredient(Ingredient(ing_name, ing_amount))
-        #     if 'step' in kwargs:
-        #         for step in kwargs['step']:
-        #             recipe.add_step(step)
-        #     recipe_id = self.db.add_recipe(recipe)
-        #     return recipe_id
-        # else:
-        #     print(recipe_id, kwargs)
-        #     raise cherrypy.HTTPError(403)

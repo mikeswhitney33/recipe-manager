@@ -3,11 +3,15 @@ $(document).ready(function(){
     $("#edit-btn").click(function() {
         window.location.href = "/edit?recipe_id=" + recipe_id;
     });
+    
     $.ajax({
         type: "GET",
         url: "/recipes?recipe_id=" + recipe_id
     }).done(function(data) {
         var obj = JSON.parse(data);
+        $('#share-btn').click(function( ){
+            alert("not working yet!");
+        });
         $('#recipe-viewer').append('<h1>'+obj['name']+'</h1>');
         if(obj['yield'].length > 0) {
             $("#recipe-viewer").append('<h3>Yield: </h3><p>'+obj['yield']+'</p>');
@@ -15,10 +19,6 @@ $(document).ready(function(){
         if(obj['description'].length > 0) {
             $("#recipe-viewer").append('<h3>Description: </h3>\
             <p>'+obj['description']+'</p>');
-        }
-        if(obj['notes'].length > 0) {
-            $('#recipe-viewer').append('<h3>Notes: </h3>\
-            <p>'+obj['notes']+'</p>');
         }
         if(obj['ingredients'].length > 0) {
             $("#recipe-viewer").append('<h3>Ingredients: </h3><table class="table" id="ing-list"><tbody></tbody></table>');
@@ -34,6 +34,10 @@ $(document).ready(function(){
             for(var i = 0;i < obj['steps'].length;i++) {
                 $('#step-list').append('<li>'+obj['steps'][i]+'</li>');
             }
+        }
+        if(obj['notes'].length > 0) {
+            $('#recipe-viewer').append('<h3>Notes: </h3>\
+            <p>'+obj['notes'].replace(/\n/g, '<br>')+'</p>');
         }
     });
 });

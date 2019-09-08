@@ -23,27 +23,20 @@ class Database(object):
         with sqlite3.connect(self.__db_path) as conn:
             cur = conn.cursor()
             cur.execute("SELECT recipe_id, name FROM recipes")
-            return cur.fetchall()
+        return cur.fetchall()
 
     def get_recipe(self, recipe_id):
         with sqlite3.connect(self.__db_path) as conn:
             cur = conn.cursor()
-            cur.execute("SELECT * FROM recipes WHERE recipe_id=?", (recipe_id,))
+            cur.execute("SELECT name, yield, description, notes FROM recipes WHERE recipe_id=?", (recipe_id,))
             row = cur.fetchone()
             if row is None:
                 return None
-            print(row)
-            recipe_id, name, yld, desc, notes = row
-            recipe = Recipe(name, yld, desc, notes)
             cur.execute("SELECT name, amount FROM ingredients WHERE recipe_id=?", (recipe_id,))
-            ingredient_data = cur.fetchall()
-            for ingredient_name, ingredient_amount in ingredient_data:
-                recipe.add_ingredient(Ingredient(ingredient_name, ingredient_amount))
+            ingredients = [{'name':name, 'amount':amount} for name, amount in cur.fetchall()]
             cur.execute("SELECT description FROM steps WHERE recipe_id=?", (recipe_id,))
-            step_data = cur.fetchall()
-            for step in step_data:
-                recipe.add_step(step)
-            return recipe
+            recipe = Recipe(*row, ingredients, cur.fetchall())
+        return recipe
 
     def add_recipe(self, recipe):
         with sqlite3.connect(self.__db_path) as conn:
@@ -55,7 +48,7 @@ class Database(object):
             for step in recipe.steps:
                 cur.execute("INSERT INTO steps (description, recipe_id) VALUES (?, ?)", (step, recipe_id))
             conn.commit()
-            return recipe_id
+        return recipe_id
 
     def remove_recipe(self, recipe_id):
         with sqlite3.connect(self.__db_path) as conn:
