@@ -31,6 +31,8 @@ class HomeController(BaseController):
     def view(self, recipe_id=""):
         if recipe_id.isdigit():
             page = self.set_body(self.template, 'views/home/view.html')
+            page = self.add_js(page, 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js')
+            page = self.add_js(page, 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js')
             page = self.add_js(page, '/static/js/recipe-view.js')
             page = self.add_css(page, '/static/css/recipe-view.css')
             return page
