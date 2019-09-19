@@ -105,4 +105,4 @@ venv.bak/
 
 
 .DS_Store
-*.db
+db/recipe.db
