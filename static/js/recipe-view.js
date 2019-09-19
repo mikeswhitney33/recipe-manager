@@ -1,8 +1,9 @@
-function addElem(pdf, cury, txt) {
-    if(txt.length > 0) {
-        pdf.text(25.4, cury, txt);
-        cury += 10;
-    }
+function addTitle(pdf, ml, cury, title) {
+    pdf.setFontSize(8);
+    pdf.setFontStyle('bold');
+    pdf.text(ml, cury, title);
+    cury += pdf.getTextDimensions(title)['h'] + 2.5;
+    pdf.setFontType("normal");
     return cury;
 }
 
@@ -20,35 +21,25 @@ $(document).ready(function(){
         $('#download-btn').click(function( ){
             var pdf = new jsPDF("p", "mm", "a4");
             var cury = 25.4;
-            var margin_left = 25.4
+            var ml = 25.4;
+            var mli = ml + 5;
             pdf.setFontSize(24);
-            pdf.text(margin_left, cury, obj['name']);
+            pdf.text(ml, cury, obj['name']);
             cury += pdf.getTextDimensions(obj['name'])['h'];
-            if(obj['yield'].length > 0) {
-                pdf.setFontSize(8);
-                pdf.setFontType("bold");
-                pdf.text(margin_left, cury, "Yield: ");
-                pdf.setFontType("normal");
-                pdf.text(margin_left + pdf.getTextWidth("Yield: "), cury, obj['yield']);
-                cury += pdf.getTextDimensions(obj['yield'])['h'] + 2.5;
-            }
             if(obj['description'].length > 0) {
-                pdf.setFontSize(8);
-                pdf.setFontType("bold");
-                pdf.text(margin_left, cury, "Description:");
-                cury += pdf.getTextDimensions("Description: ")['h'] + 2.5;
-                var lines = pdf.splitTextToSize(obj['description'], 210 - (margin_left + margin_left));
-                pdf.setFontType("normal");
-                pdf.text(margin_left, cury, lines);
+                cury = addTitle(pdf, ml, cury, "Description: ");
+                var lines = pdf.splitTextToSize(obj['description'], 210 - (ml+mli));
+                pdf.text(mli, cury, lines);
+                cury += pdf.getTextDimensions(lines)['h'] + 2.5;
+            }
+            if(obj['yield'].length > 0) {
+                cury = addTitle(pdf, ml, cury, "Yield: ");
+                var lines = pdf.splitTextToSize(obj['yield'], 210 - (ml + mli));
+                pdf.text(mli, cury, lines);
                 cury += pdf.getTextDimensions(lines)['h'] + 2.5;
             }
             if(obj['ingredients'].length > 0) {
-                pdf.setFontSize(8);
-                pdf.setFontType("bold");
-                pdf.text(margin_left, cury, "Ingredients:");
-                cury += 2.5;
-                cury += pdf.getTextDimensions("Ingredients:")['h'];
-                pdf.setFontType("normal");
+                cury = addTitle(pdf, ml, cury, "Ingredients: ");
 
                 var longest = 0;
                 for(var i = 0;i < obj['ingredients'].length;i++) {
@@ -60,19 +51,14 @@ $(document).ready(function(){
                 
                 for(var i = 0;i < obj['ingredients'].length;i++) {
                     var ing = obj['ingredients'][i];
-                    pdf.text(margin_left , cury, ing['amount']);
-                    pdf.text(margin_left + longest + 15, cury, ing['name']);
+                    pdf.text(mli , cury, ing['amount']);
+                    pdf.text(mli + longest + 15, cury, ing['name']);
                     cury += pdf.getTextDimensions(ing['name'])['h'] + 1;
                 }
-                cury += 1.5;
+                cury += 2.5;
             }
             if(obj['steps'].length > 0) {
-                pdf.setFontSize(8);
-                pdf.setFontType("bold");
-                pdf.text(margin_left, cury, "Directions:");
-                cury += 2.5;
-                cury += pdf.getTextDimensions("Directions:")['h'];
-                pdf.setFontType("normal");
+                cury = addTitle(pdf, ml, cury, "Directions: ");
 
                 var longest = 0;
                 for(var i = 0;i < obj['steps'].length;i++) {
@@ -82,26 +68,28 @@ $(document).ready(function(){
                 }
 
                 for(var i = 0;i < obj['steps'].length;i++) {
-                    pdf.text(margin_left, cury, (i+1) + ". ");
-                    var lines = pdf.splitTextToSize(obj['steps'][i], 210 - (margin_left + longest + margin_left));
-                    pdf.text(margin_left + longest, cury, lines);
+                    pdf.text(mli, cury, (i+1) + ". ");
+                    var lines = pdf.splitTextToSize(
+                        obj['steps'][i],
+                        210 - (mli + longest + ml));
+                    pdf.text(mli + longest, cury, lines);
                     cury += pdf.getTextDimensions(lines)['h'] + 1;
                 }
             }
-            // cury = addElem(pdf, cury, obj['name']);
-            // cury = addElem(pdf, cury, "Yield:");
-            // pdf.setFontSize(12);
-            // cury = addElem(pdf, cury, obj['yield']);
-            // cury = addElem(pdf, cury, obj['description']);
-            pdf.save("test.pdf");
+            if(obj['notes'].length > 0) {
+                cury = addTitle(pdf, ml, cury, "Notes: ");
+                var lines = pdf.splitTextToSize(obj['notes'], 210 - (ml+mli));
+                pdf.text(mli, cury, lines);
+            }
+            pdf.save(obj['name'] + ".pdf");
         });
         $('#recipe-viewer').append('<h1>'+obj['name']+'</h1>');
-        if(obj['yield'].length > 0) {
-            $("#recipe-viewer").append('<h3>Yield: </h3><p>'+obj['yield']+'</p>');
-        }
         if(obj['description'].length > 0) {
             $("#recipe-viewer").append('<h3>Description: </h3>\
             <p>'+obj['description']+'</p>');
+        }
+        if(obj['yield'].length > 0) {
+            $("#recipe-viewer").append('<h3>Yield: </h3><p>'+obj['yield']+'</p>');
         }
         if(obj['ingredients'].length > 0) {
             $("#recipe-viewer").append('<h3>Ingredients: </h3><table class="table" id="ing-list"><tbody></tbody></table>');
