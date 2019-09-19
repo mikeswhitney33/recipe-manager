@@ -7,6 +7,109 @@ function addTitle(pdf, ml, cury, title) {
     return cury;
 }
 
+function addSingle(pdf, ml, mli, cury, title, body) {
+    if(body.length > 0) {
+        cury = addTitle(pdf, ml, cury, title);
+        var lines = pdf.splitTextToSize(body, 210 - (ml+mli));
+        pdf.text(mli, cury, lines);
+        cury += pdf.getTextDimensions(lines)['h'] + 2.5;
+    }
+    return cury;
+}
+
+function addIngredients(pdf, ml, mli, cury, ingredients) {
+    if(ingredients.length > 0) {
+        cury = addTitle(pdf, ml, cury, "Ingredients: ");
+
+        var longest = 0;
+        for(var i = 0;i < ingredients.length;i++) {
+            var ing = ingredients[i];
+            if(ing['amount'].length > longest) {
+                longest = ing['amount'].length;
+            }
+        }
+        
+        for(var i = 0;i < ingredients.length;i++) {
+            var ing = ingredients[i];
+            pdf.text(mli , cury, ing['amount']);
+            pdf.text(mli + longest + 15, cury, ing['name']);
+            cury += pdf.getTextDimensions(ing['name'])['h'] + 1;
+        }
+        cury += 2.5;
+    }
+    return cury;
+}
+
+function addSteps(pdf, ml, mli, cury, steps) {
+    if(steps.length > 0) {
+        cury = addTitle(pdf, ml, cury, "Directions: ");
+
+        var longest = 0;
+        for(var i = 0;i < steps.length;i++) {
+            if(pdf.getTextWidth((i+1) + '. ') > longest) {
+                longest = pdf.getTextWidth((i+1) + '. ');
+            }
+        }
+
+        for(var i = 0;i < steps.length;i++) {
+            pdf.text(mli, cury, (i+1) + ". ");
+            var lines = pdf.splitTextToSize(
+                steps[i],
+                210 - (mli + longest + ml));
+            pdf.text(mli + longest, cury, lines);
+            cury += pdf.getTextDimensions(lines)['h'] + 1;
+        }
+    }
+    return cury;
+}
+
+function makePdfVersion(name, desc, yld, ingredients, steps, notes) {
+    var pdf = new jsPDF("p", "mm", "a4");
+    var cury = 25.4;
+    var ml = 25.4;
+    var mli = ml + 5;
+    pdf.setFontSize(24);
+    pdf.text(ml, cury, name);
+    cury += pdf.getTextDimensions(name)['h'];
+
+    cury = addSingle(pdf, ml, mli, cury, "Description: ", desc);
+    cury = addSingle(pdf, ml, mli, cury, "Yield: ", yld);
+    cury = addIngredients(pdf, ml, mli, cury, ingredients);
+    cury = addSteps(pdf, ml, mli, cury, steps);
+    cury = addSingle(pdf, ml, mli, cury, "Notes: ", notes);
+    return pdf;
+}
+
+function makeHtmlVersion(view, name, desc, yld, ingredients, steps, notes) {
+    view.append('<h1>' + name + '</h1>');
+    if(desc.length > 0) {
+        view.append('<h3>Description: </h3>\
+        <p>' + desc + '</p>');
+    }
+    if(yld.length > 0) {
+        view.append('<h3>Yield: </h3><p>' + yld + '</p>');
+    }
+    if(ingredients.length > 0) {
+        view.append('<h3>Ingredients: </h3><table class="table" id="ing-list"><tbody></tbody></table>');
+        $.each(ingredients, function(i, ingredient) {
+            $('#ing-list').append('<tr>\
+                <td>' + ingredient['amount'] + '</td>\
+                <td>' + ingredient['name'] + '</td>\
+                </tr>');
+        });
+    }
+    if(steps.length > 0) {
+        $("#recipe-viewer").append('<h3>Directions: </h3><ol id="step-list"></ol>');
+        $.each(steps, function(i, step) {
+            $('#step-list').append('<li>' + step + '</li>');
+        });
+    }
+    if(notes.length > 0) {
+        view.append('<h3>Notes: </h3>\
+        <p>' + notes.replace(/\n/g, '<br>') + '</p>');
+    }
+}
+
 $(document).ready(function(){
     var recipe_id = getUrlVars()['recipe_id'];
     $("#edit-btn").click(function() {
@@ -18,110 +121,23 @@ $(document).ready(function(){
         url: "/recipes?recipe_id=" + recipe_id
     }).done(function(data) {
         var obj = JSON.parse(data);
-        $('#download-btn').click(function( ){
-            var pdf = new jsPDF("p", "mm", "a4");
-            var cury = 25.4;
-            var ml = 25.4;
-            var mli = ml + 5;
-            pdf.setFontSize(24);
-            pdf.text(ml, cury, obj['name']);
-            cury += pdf.getTextDimensions(obj['name'])['h'];
-            if(obj['description'].length > 0) {
-                cury = addTitle(pdf, ml, cury, "Description: ");
-                var lines = pdf.splitTextToSize(obj['description'], 210 - (ml+mli));
-                pdf.text(mli, cury, lines);
-                cury += pdf.getTextDimensions(lines)['h'] + 2.5;
-            }
-            if(obj['yield'].length > 0) {
-                cury = addTitle(pdf, ml, cury, "Yield: ");
-                var lines = pdf.splitTextToSize(obj['yield'], 210 - (ml + mli));
-                pdf.text(mli, cury, lines);
-                cury += pdf.getTextDimensions(lines)['h'] + 2.5;
-            }
-            if(obj['ingredients'].length > 0) {
-                cury = addTitle(pdf, ml, cury, "Ingredients: ");
-
-                var longest = 0;
-                for(var i = 0;i < obj['ingredients'].length;i++) {
-                    var ing = obj['ingredients'][i];
-                    if(ing['amount'].length > longest) {
-                        longest = ing['amount'].length;
-                    }
-                }
-                
-                for(var i = 0;i < obj['ingredients'].length;i++) {
-                    var ing = obj['ingredients'][i];
-                    pdf.text(mli , cury, ing['amount']);
-                    pdf.text(mli + longest + 15, cury, ing['name']);
-                    cury += pdf.getTextDimensions(ing['name'])['h'] + 1;
-                }
-                cury += 2.5;
-            }
-            if(obj['steps'].length > 0) {
-                cury = addTitle(pdf, ml, cury, "Directions: ");
-
-                var longest = 0;
-                for(var i = 0;i < obj['steps'].length;i++) {
-                    if(pdf.getTextWidth((i+1) + '. ') > longest) {
-                        longest = pdf.getTextWidth((i+1) + '. ');
-                    }
-                }
-
-                for(var i = 0;i < obj['steps'].length;i++) {
-                    pdf.text(mli, cury, (i+1) + ". ");
-                    var lines = pdf.splitTextToSize(
-                        obj['steps'][i],
-                        210 - (mli + longest + ml));
-                    pdf.text(mli + longest, cury, lines);
-                    cury += pdf.getTextDimensions(lines)['h'] + 1;
-                }
-            }
-            if(obj['notes'].length > 0) {
-                cury = addTitle(pdf, ml, cury, "Notes: ");
-                var lines = pdf.splitTextToSize(obj['notes'], 210 - (ml+mli));
-                pdf.text(mli, cury, lines);
-            }
+        $('#download-btn').click(function(){
+            var pdf = makePdfVersion(
+                obj['name'], 
+                obj['description'], 
+                obj['yield'], 
+                obj['ingredients'], 
+                obj['steps'], 
+                obj['notes']);
             pdf.save(obj['name'] + ".pdf");
         });
-        $('#recipe-viewer').append('<h1>'+obj['name']+'</h1>');
-        if(obj['description'].length > 0) {
-            $("#recipe-viewer").append('<h3>Description: </h3>\
-            <p>'+obj['description']+'</p>');
-        }
-        if(obj['yield'].length > 0) {
-            $("#recipe-viewer").append('<h3>Yield: </h3><p>'+obj['yield']+'</p>');
-        }
-        if(obj['ingredients'].length > 0) {
-            $("#recipe-viewer").append('<h3>Ingredients: </h3><table class="table" id="ing-list"><tbody></tbody></table>');
-            for(var i = 0;i < obj['ingredients'].length;i++) {
-                $('#ing-list').append('<tr>\
-                    <td>'+obj['ingredients'][i]['amount']+'</td>\
-                    <td>'+obj['ingredients'][i]['name']+'</td>\
-                </tr>');
-            }
-        }
-        if(obj['steps'].length > 0) {
-            $("#recipe-viewer").append('<h3>Directions: </h3><ol id="step-list"></ol>');
-            for(var i = 0;i < obj['steps'].length;i++) {
-                $('#step-list').append('<li>'+obj['steps'][i]+'</li>');
-            }
-        }
-        if(obj['notes'].length > 0) {
-            $('#recipe-viewer').append('<h3>Notes: </h3>\
-            <p>'+obj['notes'].replace(/\n/g, '<br>')+'</p>');
-        }
+        makeHtmlVersion(
+            $('#recipe-viewer'), 
+            obj['name'], 
+            obj['description'], 
+            obj['yield'], 
+            obj['ingredients'], 
+            obj['steps'], 
+            obj['notes']);
     });
 });
-
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
