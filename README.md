@@ -1,7 +1,7 @@
 # Recipe Manager
 
 This is a simple web app for managing a recipe database. 
-The server is build using php so to run a local copy just use the following command:
+The server is build using php so to run a local copy just use the following command in the public_html directory:
 ```
 php -S <host>:<port>
 ```
