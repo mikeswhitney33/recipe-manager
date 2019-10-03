@@ -1,0 +1,66 @@
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+.top-item {
+    color: white;
+    text-align: center;
+    padding-top: auto;
+    padding-bottom: auto;
+    font-size: 28px;
+    border-radius: 5px;
+}
+.top-link {
+    cursor: pointer;
+    transition-duration: 0.2s;
+}
+
+.top-link:hover {
+    background-color: #555555;  
+}
+
+
+
+.top-matter {
+    background-color: #fff;
+    margin-bottom: 0px;
+}
+
+.wrapper {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.footer {
+    width: 100%;
+}
+
+.copy-left {
+    display: inline-block;
+    text-align: right;
+    margin: 0px;
+    -moz-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    filter: FlipH;
+    -ms-filter: “FlipH”;
+}
+
+.copyleft-content {
+    text-align: center;
+}
+
+.background-image {
+    z-index: -999999;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+
+    background-image: url("/shared/images/bg.jpg");
+    background-repeat: none;
+    background-size: cover;
+    background-position: center;
+}

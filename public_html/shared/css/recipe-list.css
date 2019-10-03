@@ -1,0 +1,25 @@
+.recipe-list-item {
+    cursor:pointer;
+    width: 100%;
+    border: solid 1px #dedede;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    transition-duration: .3s;
+    height: 250px;
+    overflow-y: hide;
+    background-color: #fff;
+}
+
+.recipe-list-item > img {
+    float: left;
+    width: 100%;
+}
+
+.recipe-list-item:hover {
+    background-color: #dedede;
+}
+
+.recipe-list-item-body {
+    padding: 25px;
+    float: left;
+}

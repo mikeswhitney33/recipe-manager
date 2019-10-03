@@ -1,0 +1,45 @@
+<div class="container bg-white">
+    <div id="add-form" class="mb-3 mt-3 page-content">
+        <div id="name-group" class="form-group mt-3">
+            <label for="name">Recipe Name:</label>
+            <input class="form-control required" type='text' id='name'>
+        </div>
+        <div class="form-group mt-3">
+            <label for="desc">Description:</label>
+            <textarea class="form-control" id="desc"></textarea>
+        </div>
+        <div class="form-group mt-3">
+            <label for="impath">Image:</label>
+            <input class="form-control" type="file" id="impath" accept="image/*">
+        </div>
+        <div class="form-group mt-3">
+            <label for="yield">Yield:</label>
+            <input class="form-control" type='text' id='yield'>
+        </div>
+        <div class="form-group mt-3">
+            <label for="ingredient-list">Ingredients:</label>
+            <ul class="list-group" id="ingredient-list">
+
+            </ul>
+            <div class="btn btn-primary mt-3" id="add-ingredient">Add Ingredient</div>
+        </div>
+        <div class="form-group mt-3">
+            <label for="steps-list">Directions:</label>
+            <ul class="list-group" id="steps-list">
+
+            </ul>
+            <div class="btn btn-primary mt-3" id="add-step">Add Step</div>
+        </div>
+        <div class="form-group mt-3">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" class="form-control"></textarea>
+        </div>
+        <div class="form-group mt-3">
+            <label for="keywords">Keywords:</label>
+            <p>Add keywords using a comma to seperate each one.  These will make it easier to search for recipes on the home page.</p>
+            <textarea id="keywords" class="form-control"></textarea>
+        </div>
+        <div class="btn btn-primary" id="save-btn">Save Recipe</div>
+        <div class="btn btn-info cancel-btn">Cancel</div>
+    </div>
+</div>
